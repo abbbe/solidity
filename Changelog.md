@@ -1,6 +1,7 @@
 ### 0.4.20 (unreleased)
 
 Features:
+ * C99/C++-style scoping rules (instead of JavaScript function scoping) take effect as experimental v0.5.0 feature.
  * Code Generator: Prevent non-view functions in libraries from being called directly.
  * Commandline interface: Support strict mode of assembly with the ``--strict--assembly`` switch.
  * Compiler now continues resolving references after the first error.
