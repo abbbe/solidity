@@ -611,26 +611,32 @@ void DeclarationRegistrationHelper::endVisit(ModifierDefinition&)
 
 bool DeclarationRegistrationHelper::visit(Block& _block)
 {
-	enterNewSubScope(_block);
+	// Enable C99-scoped variables.
+	if (_block.scope() && _block.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
+		enterNewSubScope(_block);
 	return true;
 }
 
-void DeclarationRegistrationHelper::endVisit(Block&)
+void DeclarationRegistrationHelper::endVisit(Block& _block)
 {
-	closeCurrentScope();
+	// Enable C99-scoped variables.
+	if (_block.scope() && _block.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
+		closeCurrentScope();
 }
 
 bool DeclarationRegistrationHelper::visit(ForStatement& _for)
 {
-	// TODO special scoping rules for the init statement - if it is a block, then it should
-	// not open its own scope.
-	enterNewSubScope(_for);
+	if (_for.scope() && _for.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
+		// TODO special scoping rules for the init statement - if it is a block, then it should
+		// not open its own scope.
+		enterNewSubScope(_for);
 	return true;
 }
 
-void DeclarationRegistrationHelper::endVisit(ForStatement&)
+void DeclarationRegistrationHelper::endVisit(ForStatement& _for)
 {
-	closeCurrentScope();
+	if (_for.scope() && _for.sourceUnit().annotation().experimentalFeatures.count(ExperimentalFeature::V050))
+		closeCurrentScope();
 }
 
 void DeclarationRegistrationHelper::endVisit(VariableDeclarationStatement& _variableDeclarationStatement)

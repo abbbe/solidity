@@ -84,6 +84,20 @@ BOOST_AUTO_TEST_CASE(double_variable_declaration)
 			}
 		}
 	)";
+	CHECK_ERROR(text, DeclarationError, "Identifier already declared");
+}
+
+BOOST_AUTO_TEST_CASE(double_variable_declaration_050)
+{
+	string text = R"(
+		pragma experimental "v0.5.0";
+		contract test {
+			function f() pure public {
+				uint256 x;
+				if (true) { uint256 x; }
+			}
+		}
+	)";
 	CHECK_WARNING_ALLOW_MULTI(text, (vector<string>{
 		"This declaration shadows an existing declaration.",
 		"Unused local variable",
@@ -91,9 +105,23 @@ BOOST_AUTO_TEST_CASE(double_variable_declaration)
 	}));
 }
 
+BOOST_AUTO_TEST_CASE(scoping_old)
+{
+	char const* text = R"(
+		contract test {
+			function f() public {
+				x = 4;
+				uint256 x = 2;
+			}
+		}
+	)";
+	CHECK_SUCCESS_NO_WARNINGS(text);
+}
+
 BOOST_AUTO_TEST_CASE(scoping)
 {
 	char const* text = R"(
+		pragma experimental "v0.5.0";
 		contract test {
 			function f() public {
 				{
@@ -109,6 +137,7 @@ BOOST_AUTO_TEST_CASE(scoping)
 BOOST_AUTO_TEST_CASE(scoping_for)
 {
 	char const* text = R"(
+		pragma experimental "v0.5.0";
 		contract test {
 			function f() public {
 				for (uint x = 0; x < 10; x ++){
@@ -123,6 +152,7 @@ BOOST_AUTO_TEST_CASE(scoping_for)
 BOOST_AUTO_TEST_CASE(scoping_for2)
 {
 	char const* text = R"(
+		pragma experimental "v0.5.0";
 		contract test {
 			function f() public {
 				for (uint x = 0; x < 10; x ++){
